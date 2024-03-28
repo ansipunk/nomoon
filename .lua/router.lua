@@ -1,4 +1,4 @@
-local function resolveRoute(route)
+local function resolve(route)
 	local elements = {}
 	for element in string.gmatch(route, "([^/]+)") do
 		table.insert(elements, element)
@@ -16,8 +16,19 @@ local function resolveRoute(route)
 			return {entity = "root", threadId = 0, postId = 0, page = page}
 		end
 
-		if elements[1] ~= "t" then return nil end
-		return {entity = "thread", threadId = 0, postId = 0, page = 0}
+		if elements[1] == "t" then
+			return {entity = "thread", threadId = 0, postId = 0, page = 0}
+		elseif elements[1] == "faq" then
+			return {entity = "faq", threadId = 0, postId = 0, page = 0}
+		elseif elements[1] == "favicon.ico" then
+			return {entity = "favicon", threadId = 0, postId = 0, page = 0}
+		elseif elements[1] == "styles.css" then
+			return {entity = "styles", threadId = 0, postId = 0, page = 0}
+		elseif elements[1] == "logo.png" then
+			return {entity = "logo", threadId = 0, postId = 0, page = 0}
+		end
+
+		return nil
 	end
 
 	if elements[1] ~= "t" then return nil end
@@ -39,15 +50,4 @@ local function resolveRoute(route)
 	return {entity = "post", threadId = threadId, postId = postId, page = 0}
 end
 
-local function resolve()
-	return {
-		route = resolveRoute(GetPath()),
-		method = GetMethod(),
-		params = GetParams()
-	}
-end
-
-return {
-	resolveRoute = resolveRoute,
-	resolve = resolve,
-}
+return resolve
