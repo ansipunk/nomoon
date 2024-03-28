@@ -47,6 +47,8 @@ local function serveRedirect(target)
 	SetHeader("Location", target)
 end
 
+ProgramCache(24 * 60 * 60)
+
 function OnServerStart()
 	model.migrate(db)
 end

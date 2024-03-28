@@ -7,16 +7,16 @@ local templates = {
 		'td>Italic</td><td>__text__</td><td><em>text</em></td></tr><tr><td>Mono' ..
 		'spaced</td><td>`text`</td><td><code>text</code></td></tr><tr><td>Strik' ..
 		'ethrough</td><td>~~text~~</td><td><s>text</s></td></tr><tr><td>Spoiler' ..
-		'</td><td>%%text%%</td><td><code>text</code></td></tr><tr><td>Quote</td' ..
-		'><td>&gt;text</td><td><blockquote><p>text</p></blockquote></td></tr></' ..
-		'tbody></table><h4>Why no code blocks?</h4><p>Use pastebin.</p><h4>Why ' ..
-		'make this?</h4><p>To learn Lua.</p>',
+		'</td><td>%%text%%</td><td><span class="spoiler">text</span></td></tr><' ..
+		'tr><td>Quote</td><td>&gt;text</td><td><span class="quote">text</span><' ..
+		'/td></tr></tbody></table><h4>Why no code blocks?</h4><p>Use pastebin.<' ..
+		'/p><h4>Why make this?</h4><p>To learn Lua.</p>',
 	headerEnd = '</title><meta charset="utf-8" /><meta name="viewport" content=' ..
 		'"width=device-width, initial-scale=1" /><link rel="stylesheet" href="/' ..
 		'styles.css" /><link rel="icon" type="image/x-icon" href="/favicon.ico"' ..
 		'></head><body><header><a href="/"><img src="/logo.png" alt="nomoon log' ..
-		'o" width="20px"height="20px" /></a><nav><a href="/faq">faq</a> <a href' ..
-		'="/">home</a></nav></header><main>',
+		'o" height="32px" /></a><nav><a href="/faq">faq</a> <a href="/">home</a' ..
+		'></nav></header><main>',
 	createPostEnd = '/p" method="post"><textarea name="content"></textarea><div' ..
 		' class="controls"><label for="op">OP <input type="checkbox" id="op" na' ..
 		'me="op" value="true" /></label><input type="submit" value="Send post" ' ..

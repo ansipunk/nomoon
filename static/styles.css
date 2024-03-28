@@ -165,12 +165,7 @@ pre {
 audio,
 img,
 video {
-  border-radius: var(--border-radius);
   max-width: 100%;
-}
-
-img {
-  height: auto;
 }
 
 /* Tables */
@@ -395,7 +390,7 @@ footer > p {
 	padding: 0;
 }
 
-.content p, .content pre, blockquote {
+.content p {
 	margin: 0;
 	padding: 0;
 	overflow-x: auto;
@@ -404,10 +399,6 @@ footer > p {
 
 .content > p {
 	margin: 0.4em 0;
-}
-
-blockquote > p {
-	margin: 0;
 }
 
 .content *:first-child {
@@ -516,16 +507,11 @@ textarea {
 	text-align: center;
 }
 
-blockquote > p {
-	margin: 0;
-}
-
-blockquote {
+.quote {
 	color: #55EE66;
-	margin: 0.4em 0;
 }
 
-blockquote p:before {
+.quote:before {
 	content: ">";
 }
 
@@ -537,4 +523,10 @@ blockquote p:before {
 .spoiler:hover {
 	background: var(--text);
 	color: var(--background-body);
+}
+
+header img {
+	padding: 4px;
+	width: auto;
+	background: white;
 }
