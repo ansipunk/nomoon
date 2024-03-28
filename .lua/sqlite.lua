@@ -18,8 +18,18 @@ function Database.new(url)
 	return self
 end
 
+function Database:prepare(...)
+	local args = {...}
+	local query = args[1]
+	local stmt = self.db:prepare(query)
+	if #args > 1 then
+		stmt:bind_values(table.unpack(args, 2))
+	end
+	return stmt
+end
+
 function Database:execute(...)
-	local stmt = self.db:prepare(...)
+	local stmt = self:prepare(...)
 	while true do
 		local step = stmt:step()
 		if step == sqlite3.DONE or step == sqlite3.ERROR then break end
@@ -28,14 +38,14 @@ function Database:execute(...)
 end
 
 function Database:fetchOne(...)
-	local stmt = self.db:prepare(...)
+	local stmt = self:prepare(...)
 	for row in stmt:nrows() do return row end
 	finalize(stmt)
 end
 
 function Database:fetchAll(...)
 	local rows = {}
-	local stmt = self.db:prepare(...)
+	local stmt = self:prepare(...)
 	for row in stmt:nrows() do table.insert(rows, row) end
 	finalize(stmt)
 	return rows

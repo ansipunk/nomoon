@@ -39,12 +39,8 @@ function TestRunner:assertNotNil(got)
 	end
 end
 
-function TestRunner:ctx()
-	return {db=sqlite()}
-end
-
 function TestRunner:run(name, func)
-	local status, err = pcall(func, self:ctx())
+	local status, err = pcall(func)
 
 	if status then
 		self.pass = self.pass + 1
