@@ -19,7 +19,7 @@ build: deps
 	chmod a+x nomoon.com
 
 test: build
-	$(foreach test,$(shell ls .lua | grep .test.lua),./nomoon.com -i .lua/$(test);)
+	true $(foreach test,$(shell ls .lua | grep .test.lua),&& ./nomoon.com -i .lua/$(test) )
 
 clean:
 	rm -rf .lua .redbean nomoon.com

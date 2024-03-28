@@ -13,11 +13,29 @@ function TestRunner.new(name)
 	return self
 end
 
+function TestRunner:assert(got, name)
+	if got ~= true then
+		error(
+			"-- expected --\n%s\n" % {name} ..
+			"-- to be true --"
+		)
+	end
+end
+
 function TestRunner:assertEqual(got, want)
 	if got ~= want then
 		error(
 			"-- expected --\n%s\n" % {got} ..
 			"-- to be equal to --\n%s" % {want}
+		)
+	end
+end
+
+function TestRunner:assertLowerOrEqual(got, want)
+	if got > want then
+		error(
+			"-- expected --\n%s\n" % {got} ..
+			"-- to be lower than or equal to --\n%s" % {want}
 		)
 	end
 end
@@ -44,22 +62,30 @@ function TestRunner:ctx()
 	local db = sqlite()
 	models.migrate(db)
 
-	local db_items = {
+	local items = {
 		threads = {
-			fields = {"content", "token"},
-			items = {
-				{id = 1, content = "1 / john", token = "john"},
-				{id = 2, content = "2 / jane", token = "jane"},
+			{
+				id = 1,
+				content = "1 / john",
+				token = "john",
+				delete_link = "/t/1",
+				bumped_at = "2020-01-01 00:00:00",
+				posts = {
+					{id = 1, content = "1 / 1 / no / jane", thread_id = 1, op = 0, token = "jane", delete_link = "/t/1/p/1"},
+					{id = 2, content = "2 / 1 / no / john", thread_id = 1, op = 0, token = "john", delete_link = "/t/1/p/2"},
+					{id = 3, content = "3 / 1 / op / john", thread_id = 1, op = 1, token = "john", delete_link = "/t/1/p/3"},
+					{id = 4, content = "4 / 1 / no / jane", thread_id = 1, op = 0, token = "jane", delete_link = "/t/1/p/4"},
+				}
 			},
-		},
-		posts = {
-			fields = {"content", "threadId", "op", "token"},
-			items = {
-				{id = 1, content = "1 / 1 / no / jane", threadId = 1, op = 0, token = "jane"},
-				{id = 2, content = "2 / 1 / no / john", threadId = 1, op = 0, token = "john"},
-				{id = 3, content = "3 / 1 / op / john", threadId = 1, op = 1, token = "john"},
-				{id = 4, content = "4 / 1 / no / jane", threadId = 1, op = 0, token = "jane"},
-				{id = 5, content = "5 / 2 / op / jane", threadId = 2, op = 1, token = "jane"},
+			{
+				id = 2,
+				content = "2 / jane",
+				token = "jane",
+				delete_link = "/t/2",
+				bumped_at = "2021-01-01 00:00:00",
+				posts = {
+					{id = 5, content = "5 / 2 / op / jane", thread_id = 2, op = 1, token = "jane", delete_link = "/t/2/p/5"},
+				},
 			},
 		},
 		tokens = {
@@ -68,25 +94,25 @@ function TestRunner:ctx()
 		}
 	}
 
-	for _, thread in ipairs(db_items.threads.items) do
+	for _, thread in ipairs(items.threads) do
 		db:execute([[
 			INSERT INTO threads
-			(content, token)
-			VALUES (?, ?);
-		]], thread.content, thread.token)
-	end
+			(content, token, bumped_at)
+			VALUES (?, ?, ?);
+		]], thread.content, thread.token, thread.bumped_at)
 
-	for _, post in ipairs(db_items.posts.items) do
-		db:execute([[
-			INSERT INTO posts
-			(content, thread_id, op, token)
-			VALUES (?, ?, ?, ?);
-		]], post.content, post.threadId, post.op, post.token)
+		for _, post in ipairs(thread.posts) do
+			db:execute([[
+				INSERT INTO posts
+				(content, thread_id, op, token)
+				VALUES (?, ?, ?, ?);
+			]], post.content, post.thread_id, post.op, post.token)
+		end
 	end
 
 	return {
 		db = db,
-		db_items = db_items,
+		items = items,
 	}
 end
 
@@ -110,6 +136,9 @@ function TestRunner:stats()
 	for _, err in ipairs(self.failed) do
 		print(err)
 		print("-" * #message)
+	end
+	if #self.failed > 0 then
+		os.exit(1)
 	end
 end
 

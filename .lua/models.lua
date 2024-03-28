@@ -36,8 +36,6 @@ local function migrate(db)
 	end
 end
 
-local pageSize = 10
-
 local function createThread(db, content, token)
 	return assert(db:fetchOne([[
 		INSERT INTO threads (content, token)
@@ -88,25 +86,37 @@ local function deletePost(db, postId, token)
 end
 
 local function getThread(db, threadId, token)
-	local thread = assert(db:fetchOne([[
+	local thread = db:fetchOne([[
 		SELECT id, content, created_at, '/t/' || id AS delete_link,
 		CASE WHEN (token = ?) THEN 1 ELSE 0 END AS you
 		FROM threads WHERE id = ?;
-	]], token, threadId), "failed to get thread %s" % threadId)
+	]], token, threadId)
 
-	local posts = assert(db:fetchAll([[
+	if thread == nil then
+		return nil
+	end
+
+	local posts = db:fetchAll([[
 		SELECT id, thread_id, content, created_at, op,
 		CASE WHEN (token = ?) THEN 1 ELSE 0 END AS you,
 		'/t/' || thread_id || '/p/' || id AS delete_link
 		FROM posts WHERE thread_id = ?;
-	]], token, threadId) "failed to get thread %s posts" % threadId)
+	]], token, threadId)
 
 	thread.posts = posts
 	thread.post_count = #posts
 	return thread
 end
 
-local function getThreads(db, token, page)
+local function getThreads(db, token, page, pageSize)
+	if page == nil then
+		page = 0
+	end
+
+	if pageSize == nil then
+		pageSize = 10
+	end
+
 	local result = {
 		threads = {},
 		prev = page - 1,
@@ -147,10 +157,6 @@ local function getThreads(db, token, page)
 
 	local threadPosts = {}
 	for _, post in ipairs(posts) do
-		if string.len(post.content) > 256 then
-			post.content = string.sub(post.content, 1, 256).."..."
-		end
-
 		local threadId = post.thread_id
 
 		if threadPosts[threadId] == nil then
@@ -162,10 +168,6 @@ local function getThreads(db, token, page)
 
 	local enriched = {}
 	for _, thread in ipairs(threads) do
-		if string.len(thread.content) > 256 then
-			thread.content = string.sub(thread.content, 1, 256).."..."
-		end
-
 		if threadPosts[thread.id] == nil then
 			thread.posts = {}
 			thread.post_count = 0
