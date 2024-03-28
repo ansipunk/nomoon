@@ -15,12 +15,11 @@ deps: .redbean/redbean.com
 
 build: deps
 	cat .redbean/redbean.com > nomoon.com
-	zip -r nomoon.com .init.lua .lua
+	ls .lua | grep -v .test.lua | sed s/^/.lua\\// | xargs zip -r nomoon.com .init.lua
 	chmod a+x nomoon.com
 
 test: build
-	@./nomoon.com -i .lua/markup.test.lua
-	@./nomoon.com -i .lua/sqlite.test.lua
+	$(foreach test,$(shell ls .lua | grep .test.lua),./nomoon.com -i .lua/$(test);)
 
 clean:
 	rm -rf .lua .redbean nomoon.com
