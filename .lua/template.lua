@@ -1,24 +1,26 @@
 local templates = {
-	faq = '<h4>Text formatting</h4><table><thead><tr><th>Effect</th><th>Example' ..
-		'</th><th>Result</th></tr></thead><tbody><tr><td>Bold</td><td>**text**<' ..
-		'/td><td><strong>text</strong></td></tr><tr><td>Italic</td><td>__text__' ..
-		'</td><td><em>text</em></td></tr><tr><td>Monospaced</td><td>`text`</td>' ..
-		'<td><code>text</code></td></tr><tr><td>Link</td><td>[[https://example.' ..
-		'com]]</td><td><a href="https://example.com">https://example.com</a></t' ..
-		'd></tr><tr><td>Strikethrough</td><td>~~text~~</td><td><span class="str' ..
-		'ikethrough">text</span></td></tr><tr><td>Spoiler</td><td>%%text%%</td>' ..
-		'<td><code>text</code></td></tr><tr><td>Quote</td><td>&gt;text</td><td>' ..
-		'<blockquote><p>text</p></blockquote></td></tr></tbody></table>',
+	faq = '<h4>What is this?</h4><p>This is a textboard where you can anonymous' ..
+		'ly view and write posts and chat with other users, inspired by old for' ..
+		'ums and imageboards.</p><h4>How to format text?</h4><table><thead><tr>' ..
+		'<th>Effect</th><th>Example</th><th>Result</th></tr></thead><tbody><tr>' ..
+		'<td>Bold</td><td>**text**</td><td><strong>text</strong></td></tr><tr><' ..
+		'td>Italic</td><td>__text__</td><td><em>text</em></td></tr><tr><td>Mono' ..
+		'spaced</td><td>`text`</td><td><code>text</code></td></tr><tr><td>Strik' ..
+		'ethrough</td><td>~~text~~</td><td><s>text</s></td></tr><tr><td>Spoiler' ..
+		'</td><td>%%text%%</td><td><code>text</code></td></tr><tr><td>Quote</td' ..
+		'><td>&gt;text</td><td><blockquote><p>text</p></blockquote></td></tr></' ..
+		'tbody></table><h4>Why no code blocks?</h4><p>Use pastebin.</p><h4>Why ' ..
+		'make this?</h4><p>To learn Lua.</p>',
 	headerEnd = '</title><meta charset="utf-8" /><meta name="viewport" content=' ..
 		'"width=device-width, initial-scale=1" /><link rel="stylesheet" href="/' ..
 		'styles.css" /><link rel="icon" type="image/x-icon" href="/favicon.ico"' ..
 		'></head><body><header><a href="/"><img src="/logo.png" alt="nomoon log' ..
-		'o" width="20px"height="20px" />nomoon</a><nav><a href="/faq">faq</a><a' ..
-		' href="/">home</a></nav></header><main>',
+		'o" width="20px"height="20px" /></a><nav><a href="/faq">faq</a> <a href' ..
+		'="/">home</a></nav></header><main>',
 	createPostEnd = '/p" method="post"><textarea name="content"></textarea><div' ..
-		'class="controls"><label for="op">OP<input type="checkbox" id="op" name' ..
-		'="op" value="true" /></label><inputtype="submit" value="Send post" /><' ..
-		'/div></form>',
+		' class="controls"><label for="op">OP <input type="checkbox" id="op" na' ..
+		'me="op" value="true" /></label><input type="submit" value="Send post" ' ..
+		'/></div></form>',
 	createThread = '<form action="/t" method="post"><textarea name="content"></' ..
 		'textarea><div class="controls"><input type="submit" value="Create thre' ..
 		'ad" /></div></form>',
@@ -52,6 +54,7 @@ local templates = {
 	metaMid = ' / ',
 	pageMid = '">',
 	hr = '<hr />',
+	itemId = "#",
 }
 
 local function renderPage(title, content)
@@ -59,7 +62,7 @@ local function renderPage(title, content)
 end
 
 local function renderItem(item)
-	local rendered = templates.metaStart .. item.created_at .. templates.metaMid .. tostring(item.id)
+	local rendered = templates.metaStart .. item.created_at .. templates.metaMid .. templates.itemId .. tostring(item.id)
 	if item.post_count ~= nil then rendered = rendered .. templates.metaMid .. tostring(item.post_count) .. templates.replies end
 	if item.you == 1 then rendered = rendered .. templates.metaMid .. templates.you end
 	if item.op == 1 then rendered = rendered .. templates.metaMid .. templates.op end
@@ -86,7 +89,7 @@ local function renderHomePage(threads)
 end
 
 local function renderThreadPage(thread)
-	local title = string.sub(thread.content, 1, 32) .. templates.ellipsis
+	local title = templates.itemId .. tostring(thread.id)
 	local content = renderThread(thread) .. templates.createPostStart .. tostring(thread.id) .. templates.createPostEnd
 	return renderPage(title, content)
 end

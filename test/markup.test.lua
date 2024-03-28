@@ -61,7 +61,7 @@ end)
 
 t:run("inline strikethrough", function()
 	local input = 'this is ~~striked~~ and this is ~~ not\nalso not ~~'
-	local want = '<p>this is <span class="strikethrough">striked</span> and this is ~~ not</p>\n<p>also not ~~</p>'
+	local want = '<p>this is <s>striked</s> and this is ~~ not</p>\n<p>also not ~~</p>'
 	local got = markup(input)
 	t:assertEqual(got, want)
 end)

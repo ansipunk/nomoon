@@ -27,10 +27,12 @@ local function markup(input)
 		if quotePattern:search(line) then
 			line = string.sub(line, 2, #line)
 			line = trim(line)
+			if line == "" then goto continue end
 			line = escape(line)
 			table.insert(lines, '<p class="quote">%s</p>' % {line})
 		else
 			line = trim(line)
+			if line == "" then goto continue end
 			line = escape(line)
 
 			local options = {
@@ -38,7 +40,7 @@ local function markup(input)
 				{"%*%*", "<strong>%1</strong>"},
 				{"%_%_", "<em>%1</em>"},
 				{"%%%%", '<span class="spoiler">%1</span>'},
-				{"%~%~", '<span class="strikethrough">%1</span>'},
+				{"%~%~", '<s>%1</s>'},
 			}
 
 			for _, o in ipairs(options) do
@@ -48,6 +50,8 @@ local function markup(input)
 
 			table.insert(lines, "<p>%s</p>" % {line})
 		end
+
+		::continue::
 	end
 
 	return table.concat(lines, "\n")

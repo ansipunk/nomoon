@@ -1,4 +1,4 @@
-.PHONY = help deps build clean
+.PHONY = help redbean build dev test clean
 
 help:
 	@echo ' [[ nomoon ]]'
@@ -6,6 +6,8 @@ help:
 	@echo ' help    - show this text'
 	@echo ' redbean - download redbean'
 	@echo ' build   - build nomoon'
+	@echo ' dev     - run dev build'
+	@echo ' test    - run tests'
 	@echo ' clean   - remove binaries'
 
 redbean: ./redbean.com
@@ -14,8 +16,11 @@ redbean: ./redbean.com
 
 build: redbean
 	cat redbean.com > nomoon.com
-	zip -r nomoon.com .init.lua .lua
+	zip -r nomoon.com .init.lua .lua static
 	chmod a+x nomoon.com
+
+dev: build
+	./nomoon.com /tmp/nomoon.test.db
 
 test: build
 	true $(foreach test,$(shell ls test),&& ./nomoon.com -i test/$(test) )
