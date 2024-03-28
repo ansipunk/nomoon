@@ -15,7 +15,7 @@ deps: .redbean/redbean.com
 
 build: deps
 	cat .redbean/redbean.com > nomoon.com
-	ls .lua | grep -v .test.lua | sed s/^/.lua\\// | xargs zip -r nomoon.com .init.lua
+	ls .lua | grep -v .test.lua | sed s/^/.lua\\// | xargs zip nomoon.com .init.lua
 	chmod a+x nomoon.com
 
 test: build
