@@ -23,9 +23,7 @@ function Database:prepare(...)
 	local query = args[1]
 	local stmt = self.db:prepare(query)
 	assert(stmt, self.db:errmsg())
-	if #args > 1 then
-		stmt:bind_values(table.unpack(args, 2))
-	end
+	if #args > 1 then stmt:bind_values(table.unpack(args, 2)) end
 	return stmt
 end
 

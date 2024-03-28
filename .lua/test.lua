@@ -1,4 +1,4 @@
-local models = require("models")
+local model = require("model")
 local sqlite = require("sqlite")
 
 local TestRunner = {}
@@ -14,62 +14,33 @@ function TestRunner.new(name)
 end
 
 function TestRunner:assert(got, name)
-	if got ~= true then
-		error(
-			"-- expected --\n%s\n" % {name} ..
-			"-- to be true --"
-		)
-	end
+	if got ~= true then error("-- expected --\n" .. name .. "\n-- to be true --") end
 end
 
 function TestRunner:assertEqual(got, want)
-	if got ~= want then
-		error(
-			"-- expected --\n%s\n" % {got} ..
-			"-- to be equal to --\n%s" % {want}
-		)
-	end
+	if got ~= want then error("-- expected --\n" .. got .. "\n-- to be equal to --\n" .. want) end
 end
 
 function TestRunner:assertLowerOrEqual(got, want)
-	if got > want then
-		error(
-			"-- expected --\n%s\n" % {got} ..
-			"-- to be lower than or equal to --\n%s" % {want}
-		)
-	end
+	if got > want then error("-- expected --\n" .. got .. "\n-- to be lower than or equal to --\n" .. want) end
 end
 
-function TestRunner:assertNil(got)
-	if got ~= nil then
-		error(
-			"-- expected --\n%s\n" % {got} ..
-			"-- to be nil --"
-		)
-	end
+function TestRunner:assertNil(got, name)
+	if got ~= nil then error("-- expected --\n" .. name .. "-- to be nil but got --\n" .. got) end
 end
 
 function TestRunner:assertNotNil(got, name)
-	if got == nil then
-		error(
-			"-- expected --\n%s\n" % {name} ..
-			"-- to be not nil --"
-		)
-	end
+	if got == nil then error("-- expected --\n" .. name .. "-- to be not nil --") end
 end
 
 function TestRunner:ctx()
 	local db = sqlite()
-	models.migrate(db)
+	model.migrate(db)
 
 	local items = {
 		threads = {
 			{
-				id = 1,
-				content = "1 / john",
-				token = "john",
-				delete_link = "/t/1",
-				bumped_at = "2020-01-01 00:00:00",
+				id = 1, content = "1 / john", token = "john", delete_link = "/t/1", bumped_at = "2020-01-01 00:00:00",
 				posts = {
 					{id = 1, content = "1 / 1 / no / jane", thread_id = 1, op = 0, token = "jane", delete_link = "/t/1/p/1"},
 					{id = 2, content = "2 / 1 / no / john", thread_id = 1, op = 0, token = "john", delete_link = "/t/1/p/2"},
@@ -78,20 +49,13 @@ function TestRunner:ctx()
 				}
 			},
 			{
-				id = 2,
-				content = "2 / jane",
-				token = "jane",
-				delete_link = "/t/2",
-				bumped_at = "2021-01-01 00:00:00",
+				id = 2, content = "2 / jane", token = "jane", delete_link = "/t/2", bumped_at = "2021-01-01 00:00:00",
 				posts = {
 					{id = 5, content = "5 / 2 / op / jane", thread_id = 2, op = 1, token = "jane", delete_link = "/t/2/p/5"},
 				},
 			},
 		},
-		tokens = {
-			john = "john",
-			jane = "jane",
-		}
+		tokens = {john = "john", jane = "jane"},
 	}
 
 	for _, thread in ipairs(items.threads) do
@@ -123,23 +87,17 @@ function TestRunner:run(name, func)
 	if status then
 		self.pass = self.pass + 1
 	else
-		table.insert(self.failed, "%s\n%s" % {name, err})
+		table.insert(self.failed, name .. '\n' .. err)
 	end
 
 	self.total = self.total + 1
 end
 
 function TestRunner:stats()
-	local message = "%s - %s/%s passed" % {self.name, self.pass, self.total}
-	print(message)
-	print("=" * #message)
-	for _, err in ipairs(self.failed) do
-		print(err)
-		print("-" * #message)
-	end
-	if #self.failed > 0 then
-		os.exit(1)
-	end
+	local message = self.name .. ' - ' .. tostring(self.pass) .. '/' .. tostring(self.total) .. ' passed'
+	print(message .. '\n' .. '=' * #message)
+	for _, err in ipairs(self.failed) do print(err .. '\n' .. '-' * #message) end
+	if #self.failed > 0 then os.exit(1) end
 end
 
 return TestRunner.new

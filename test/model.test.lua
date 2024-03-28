@@ -1,12 +1,12 @@
-local models = require("models")
+local model = require("model")
 local test = require("test")
 
-local t = test("models")
+local t = test("model")
 
 t:run("create thread", function(ctx)
 	local content = "content"
 	local token = "token"
-	local created = models.createThread(ctx.db, content, token)
+	local created = model.createThread(ctx.db, content, token)
 
 	t:assertEqual(created.content, content)
 	t:assertEqual(created.token, token)
@@ -17,7 +17,7 @@ end)
 
 t:run("get thread", function(ctx)
 	local thread = ctx.items.threads[1]
-	local fetched = models.getThread(ctx.db, thread.id, "token")
+	local fetched = assert(model.getThread(ctx.db, thread.id, "token"))
 
 	t:assertEqual(fetched.you, 0)
 	t:assertEqual(fetched.content, thread.content)
@@ -38,7 +38,7 @@ end)
 t:run("get thread you", function(ctx)
 	local thread = ctx.items.threads[1]
 	local token = thread.token
-	local fetched = models.getThread(ctx.db, thread.id, token)
+	local fetched = assert(model.getThread(ctx.db, thread.id, token))
 
 	t:assertEqual(fetched.you, 1)
 	t:assertEqual(fetched.content, thread.content)
@@ -57,13 +57,13 @@ t:run("get thread you", function(ctx)
 end)
 
 t:run("get thread nonexistent", function(ctx)
-	local fetched = models.getThread(ctx.db, 0, "token")
+	local fetched = model.getThread(ctx.db, 0, "token")
 	t:assertNil(fetched, "thread exists")
 end)
 
 t:run("get threads", function(ctx)
 	local threads = ctx.items.threads
-	local fetchedAll = models.getThreads(ctx.db, "token").threads
+	local fetchedAll = model.getThreads(ctx.db, "token").threads
 
 	for _, fetched in ipairs(fetchedAll) do
 		local thread = threads[fetched.id]
@@ -112,19 +112,19 @@ t:run("get threads pagination", function(ctx)
 		return true
 	end
 
-	local firstPage = models.getThreads(ctx.db, "token", 0, 1)
-	local lastPage = models.getThreads(ctx.db, "token", firstPage.next, 1)
+	local firstPage = model.getThreads(ctx.db, "token", 0, 1)
+	local lastPage = model.getThreads(ctx.db, "token", firstPage.next, 1)
 	t:assert(equal(firstPage, firstPageWant), "firstPage != firstPageWant")
 	t:assert(equal(lastPage, lastPageWant), "lastPage != lastPageWant")
 
-	local newFirstPage = models.getThreads(ctx.db, "token", lastPage.prev, 1)
+	local newFirstPage = model.getThreads(ctx.db, "token", lastPage.prev, 1)
 	t:assert(equal(newFirstPage, firstPageWant), "newFirstPage != firstPageWant")
 end)
 
 t:run("get threads you", function(ctx)
 	local threads = ctx.items.threads
 	local token = threads[1].token
-	local fetchedAll = models.getThreads(ctx.db, token)
+	local fetchedAll = model.getThreads(ctx.db, token)
 
 	for i, fetched in ipairs(fetchedAll) do
 		local thread = threads[i]
@@ -164,27 +164,27 @@ end)
 
 t:run("get threads bump order", function(ctx)
 	local token = "token"
-	local threads = models.getThreads(ctx.db, token)
+	local threads = model.getThreads(ctx.db, token)
 	t:assertEqual(threads.threads[1].id, 2)
 	t:assertEqual(threads.threads[2].id, 1)
-	models.createPost(ctx.db, 1, "content", token)
-	threads = models.getThreads(ctx.db, token)
+	model.createPost(ctx.db, 1, "content", token)
+	threads = model.getThreads(ctx.db, token)
 	t:assertEqual(threads.threads[1].id, 1)
 	t:assertEqual(threads.threads[2].id, 2)
 end)
 
 t:run("delete thread", function(ctx)
 	local thread = ctx.items.threads[1]
-	models.deleteThread(ctx.db, thread.id, thread.token)
-	local fetched = models.getThread(ctx.db, thread.id, thread.token)
+	model.deleteThread(ctx.db, thread.id, thread.token)
+	local fetched = model.getThread(ctx.db, thread.id, thread.token)
 	t:assertNil(fetched, "thread %s was not deleted" % {thread.id})
 end)
 
 t:run("delete thread with wrong token", function(ctx)
 	local token = "token"
 	local thread = ctx.items.threads[1]
-	models.deleteThread(ctx.db, thread.id, token)
-	local fetched = models.getThread(ctx.db, thread.id, token)
+	model.deleteThread(ctx.db, thread.id, token)
+	local fetched = model.getThread(ctx.db, thread.id, token)
 	t:assertNotNil(fetched, "thread %s was not deleted" % {thread.id})
 end)
 
@@ -192,7 +192,7 @@ t:run("create post", function(ctx)
 	local threadId = 1
 	local content = "content"
 	local token = "token"
-	local created = models.createPost(ctx.db, threadId, content, token)
+	local created = model.createPost(ctx.db, threadId, content, token)
 
 	t:assertEqual(created.thread_id, threadId)
 	t:assertEqual(created.content, content)
@@ -203,27 +203,27 @@ end)
 
 t:run("create post op", function(ctx)
 	local token = ctx.items.tokens.john
-	local created = models.createPost(ctx.db, 1, "content", token, "true")
+	local created = model.createPost(ctx.db, 1, "content", token, "true")
 	t:assertEqual(created.op, 1)
 end)
 
 t:run("create post op with wrong token", function(ctx)
 	local token = ctx.items.tokens.jane
-	local created = models.createPost(ctx.db, 1, "content", token, "true")
+	local created = model.createPost(ctx.db, 1, "content", token, "true")
 	t:assertEqual(created.op, 0)
 end)
 
 t:run("delete post", function(ctx)
 	local thread = ctx.items.threads[1]
-	models.deletePost(ctx.db, thread.posts[1].id, thread.posts[1].token)
-	local fetched = models.getThread(ctx.db, thread.id, "token")
+	model.deletePost(ctx.db, thread.posts[1].id, thread.posts[1].token)
+	local fetched = assert(model.getThread(ctx.db, thread.id, "token"))
 	t:assertEqual(fetched.post_count, #thread.posts - 1)
 end)
 
 t:run("delete post with wrong token", function(ctx)
 	local thread = ctx.items.threads[1]
-	models.deletePost(ctx.db, thread.posts[1].id, "token")
-	local fetched = models.getThread(ctx.db, thread.id, "token")
+	model.deletePost(ctx.db, thread.posts[1].id, "token")
+	local fetched = assert(model.getThread(ctx.db, thread.id, "token"))
 	t:assertEqual(fetched.post_count, #thread.posts)
 end)
 

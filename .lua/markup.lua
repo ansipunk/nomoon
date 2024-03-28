@@ -14,14 +14,16 @@ local function trim(line)
 end
 
 local function escape(line)
-	return EscapeHtml(line)
+	line = line:gsub("&", "&amp;")
+	line = line:gsub("<", "&lt;")
+	return line
 end
 
 local function markup(input)
 	local lines = {}
 	input = normalizeNewlines(input)
 
-	for line in string.gmatch(input, "([^\n]+)") do
+	for line in input:gmatch("([^\n]+)") do
 		if quotePattern:search(line) then
 			line = string.sub(line, 2, #line)
 			line = trim(line)
