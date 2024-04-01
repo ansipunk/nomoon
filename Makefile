@@ -23,7 +23,7 @@ dev: build
 	./nomoon.com /tmp/nomoon.test.db
 
 test: build
-	true $(foreach test,$(shell ls test),&& ./nomoon.com -i test/$(test) )
+	$(foreach test,$(shell ls tests),./nomoon.com -i tests/$(test);)
 
 clean:
 	rm -rf redbean.com nomoon.com
