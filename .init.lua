@@ -47,13 +47,7 @@ local function serveRedirect(target)
 	SetHeader("Location", target)
 end
 
-ProgramCache(24 * 60 * 60)
-
-function OnServerStart()
-	model.migrate(db)
-end
-
-function OnHttpRequest()
+local function serveRequest()
 	local route = router(GetPath())
 	local token = getToken()
 	local method = GetMethod()
@@ -100,4 +94,19 @@ function OnHttpRequest()
 	end
 
 	return serveError(404, "No such thing")
+end
+
+ProgramCache(24 * 60 * 60)
+
+function OnServerStart()
+	model.migrate(db)
+end
+
+function OnHttpRequest()
+	local status, err = pcall(serveRequest)
+
+	if not status then
+		serveError(500, "Internal error")
+		error(err)
+	end
 end

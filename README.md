@@ -2,7 +2,7 @@
 
 ## Todo
 
-- [ ] Serve 500 automatically
+- [x] Serve 500 automatically
 - [ ] Admin cookie
   - [ ] Delete as admin
   - [ ] Ban user
