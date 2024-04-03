@@ -82,8 +82,8 @@ local function renderHomePage(threads)
 	local content = templates.createThread
 	for _, thread in ipairs(threads.threads) do content = content .. renderThread(thread) end
 	content = content .. templates.paginatorStart
-	if threads.next > 0 then content = content .. templates.pageStart .. tostring(threads.next) .. templates.pageOld end
-	if threads.prev >= 0 then content = content .. templates.pageStart .. tostring(threads.prev) .. templates.pageNew end
+	if threads.next > 0 then content = content .. templates.pageStart .. tostring(threads.next) .. templates.pageMid .. templates.pageOld end
+	if threads.prev >= 0 then content = content .. templates.pageStart .. tostring(threads.prev) .. templates.pageMid .. templates.pageNew end
 	content = content .. templates.divEnd
 	return renderPage(templates.homeTitle, content)
 end
