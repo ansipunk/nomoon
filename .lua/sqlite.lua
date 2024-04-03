@@ -3,11 +3,6 @@ local sqlite3 = require("lsqlite3")
 local Database = {}
 Database.__index = Database
 
-local function finalize(stmt)
-	local status = stmt:finalize()
-	if status ~= sqlite3.OK then error(status) end
-end
-
 function Database.new(url)
 	local self = setmetatable({}, Database)
 	if url == nil then
@@ -18,35 +13,40 @@ function Database.new(url)
 	return self
 end
 
-function Database:prepare(...)
-	local args = {...}
-	local query = args[1]
-	local stmt = self.db:prepare(query)
+function Database.finalize(stmt)
+	local status = stmt:finalize()
+	if status ~= sqlite3.OK then error(status) end
+end
+
+function Database:prepare(query, ...)
+	local stmt, args = self.db:prepare(query), {...}
 	assert(stmt, self.db:errmsg())
-	if #args > 1 then stmt:bind_values(table.unpack(args, 2)) end
+	if #args > 0 then stmt:bind_values(...) end
 	return stmt
 end
 
-function Database:execute(...)
-	local stmt = self:prepare(...)
+function Database:execute(query, ...)
+	local stmt = self:prepare(query, ...)
 	while true do
 		local step = stmt:step()
 		if step == sqlite3.DONE or step == sqlite3.ERROR then break end
 	end
-	finalize(stmt)
+	self.finalize(stmt)
 end
 
-function Database:fetchOne(...)
-	local stmt = self:prepare(...)
-	for row in stmt:nrows() do return row end
-	finalize(stmt)
+function Database:fetchOne(query, ...)
+	local stmt = self:prepare(query, ...)
+	local result = nil
+	for row in stmt:nrows() do result = row end
+	self.finalize(stmt)
+	return result
 end
 
-function Database:fetchAll(...)
+function Database:fetchAll(query, ...)
 	local rows = {}
-	local stmt = self:prepare(...)
+	local stmt = self:prepare(query, ...)
 	for row in stmt:nrows() do table.insert(rows, row) end
-	finalize(stmt)
+	self.finalize(stmt)
 	return rows
 end
 
