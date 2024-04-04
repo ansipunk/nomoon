@@ -12,7 +12,7 @@ help:
 
 redbean: ./redbean.com
 ./redbean.com:
-	curl https://redbean.dev/redbean-latest.com > .redbean/redbean.com
+	curl https://redbean.dev/redbean-latest.com > redbean.com
 
 build: redbean
 	cat redbean.com > nomoon.com

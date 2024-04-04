@@ -1,50 +1,43 @@
 /**
- * Bolt.css
- * Version 0.6.0
+ * Based on Bolt.css
  * https://github.com/tbolt/boltcss
- *
- * Sections
- * 1. Content sectioning
- * 2. Text content
- * 3. Inline text semantics
- * 4. Image and multimedia
- * 5. Tables
- * 6. Forms
- * 7. Interactive elements
- *
  */
 
 :root {
-  --highlight-border-radius: 7px;
-  --border-radius: 11px;
-  --yellow-highlight: #fffab7;
+  --accent: MediumSpringGreen;
+  --background: WhiteSmoke;
+  --border: LightGray;
+  --text-dim: DimGray;
+  --text: Black;
+  --red: OrangeRed;
+  --green: ForestGreen;
+  --blue: RoyalBlue;
+  --yellow: GoldenRod;
 
-  --links: #0f6dff;
-  --background-body: #fff;
-  --background-main: #f1f1f1;
-  --background-inputs: #fcfcfc;
-  --text: #1c1d1e;
-  --text-dim: #3c3d3e;
-  --border: #dddddd;
-  --focus-highlight: #b8b8b8;
-  --shadow-color: #545454;
-  --table-highlight: #f1f1f1;
-  --select-icon-url: url("data:image/svg+xml,%3Csvg width='292' height='292' viewBox='0 0 292 292' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cpath id='Path' fill='%23222222' stroke='none' d='M 287 69 C 283.606537 65.469971 278.895844 63.513214 274 63.600006 L 18.4 63.600006 C 13.4 63.600006 9.1 65.400009 5.5 69 C 1.984143 72.328568 -0.005267 76.958466 -0 81.800003 C -0 86.800003 1.8 91.100006 5.4 94.699997 L 133.399994 222.600006 C 137 226.200012 141.199997 228 146.199997 228 C 151.199997 228 155.399994 226.200012 159 222.600006 L 287 94.600006 C 290.5 91.100006 292.399994 86.800003 292.399994 81.800003 C 292.399994 76.800003 290.5 72.600006 286.899994 69 Z'/%3E%3C/svg%3E");
+  --border-radius: 11px;
+  --highlight-border-radius: 7px;
+
+  header img {
+    background: var(--accent);
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --links: #4589ee;
-    --background-body: #0f0f0f;
-    --background-main: #222;
-    --background-inputs: #222;
-    --text: #efefef;
-    --text-dim: #bcbcbc;
-    --border: #444;
-    --focus-highlight: #888;
-    --shadow-color: #bebebe;
-    --table-highlight: #222;
-    --select-icon-url: url("data:image/svg+xml,%3Csvg width='292' height='292' viewBox='0 0 292 292' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3Cpath id='Path' fill='%23ffffff' stroke='none' d='M 287 69 C 283.606537 65.469971 278.895844 63.513214 274 63.600006 L 18.4 63.600006 C 13.4 63.600006 9.1 65.400009 5.5 69 C 1.984143 72.328568 -0.005267 76.958466 -0 81.800003 C -0 86.800003 1.8 91.100006 5.4 94.699997 L 133.399994 222.600006 C 137 226.200012 141.199997 228 146.199997 228 C 151.199997 228 155.399994 226.200012 159 222.600006 L 287 94.600006 C 290.5 91.100006 292.399994 86.800003 292.399994 81.800003 C 292.399994 76.800003 290.5 72.600006 286.899994 69 Z'/%3E%3C/svg%3E");
+    --accent: Indigo;
+    --background: #070707;
+    --border: #333;
+    --text-dim: #777;
+    --text: #CCC;
+    --red: Crimson;
+    --green: LawnGreen;
+    --blue: DodgerBlue;
+    --yellow: Gold;
+
+    header img {
+      background: var(--green);
+	  filter: invert(1);
+    }
   }
 }
 
@@ -60,7 +53,7 @@ body {
   font-size: 12pt;
   font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   color: var(--text);
-  background: var(--background-body);
+  background: var(--background);
 }
 
 h1 {
@@ -120,7 +113,7 @@ p {
 
 /* Inline text elements */
 a {
-  color: var(--links);
+  color: var(--blue);
   text-decoration: none;
 }
 
@@ -144,21 +137,9 @@ code,
 pre {
   font-size: 1em;
   padding: 2px 4px;
-  background: var(--background-main);
+  background: var(--accent);
   max-width: fit-content;
   overflow-x: auto;
-}
-
-pre > code {
-  padding: 10px;
-  border: 0;
-  display: block;
-  overflow-x: auto;
-}
-
-pre {
-  margin: 0;
-  border-radius: var(--border-radius);
 }
 
 /* Image and multimedia */
@@ -171,8 +152,8 @@ video {
 /* Tables */
 table {
   width: fit-content;
-  border: 1px solid var(--background-main);
-  background: var(--background-main);
+  border: 1px solid var(--accent);
+  background: var(--accent);
   border-radius: var(--border-radius);
 }
 
@@ -193,11 +174,11 @@ table tr:first-child th:last-child {
 }
 
 th {
-  background-color: var(--background-main);
+  background-color: var(--accent);
 }
 
 td {
-  background: var(--background-body);
+  background: var(--background);
 }
 
 td,
@@ -214,12 +195,6 @@ tfoot {
   border-top: 1px solid black;
 }
 
-table tr:hover td,
-tbody tr:nth-child(even):hover td {
-  background-color: var(--table-highlight);
-}
-
-/* Form elements */
 input,
 button,
 textarea {
@@ -236,7 +211,7 @@ input[type="checkbox"] {
 
 button {
   color: var(--text);
-  background-color: var(--background-main);
+  background-color: var(--accent);
   font-family: inherit;
   font-size: inherit;
   padding: 6px 15px 6px 15px;
@@ -265,7 +240,7 @@ label {
 
 input {
   font-size: 1em;
-  background-color: var(--background-inputs);
+  background-color: var(--background);
   border: 1px solid var(--border);
   color: var(--text);
   margin: 6px 0px;
@@ -289,8 +264,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-  border: 1px solid var(--links);
-  background: var(--links);
+  border: 1px solid var(--blue);
+  background: var(--blue);
 }
 
 input[type="checkbox"]:checked {
@@ -300,7 +275,7 @@ input[type="checkbox"]:checked {
 textarea {
   font-family: inherit;
   font-size: 1em;
-  background-color: var(--background-inputs);
+  background-color: var(--background);
   border: 1px solid var(--border);
   padding: 11px;
   color: var(--text);
@@ -314,14 +289,14 @@ fieldset:focus-within,
 input:focus-within,
 textarea:focus-within,
 select:focus-within {
-  border-color: var(--focus-highlight);
+  border-color: var(--text-dim);
 }
 
 fieldset:hover,
 input:hover,
 textarea:hover,
 select:hover {
-  border-color: var(--focus-highlight);
+  border-color: var(--text-dim);
 }
 
 body {
@@ -398,7 +373,7 @@ footer > p {
 }
 
 .content > p {
-	margin: 0.4em 0;
+	margin: 0.15em 0;
 }
 
 .content *:first-child {
@@ -419,7 +394,7 @@ footer > p {
 
 .post {
 	margin-left: 1em;
-	border: 1px solid #252525;
+	border: 1px solid var(--border);
 	padding: .5em;
 	border-radius: .5em;
 }
@@ -451,14 +426,14 @@ textarea {
 	flex-grow: 1;
 	padding: 1.5em 0;
 	text-align: center;
-	background: #202020;
+	border: 1px var(--border) solid;
 	color: var(--text);
 	border-radius: .5em;
 	text-decoration: none;
 }
 
 .paginator a:hover {
-	background: #252525;
+	border: 1px var(--text-dim) solid;
 }
 
 .delete {
@@ -468,7 +443,7 @@ textarea {
 }
 
 .delete button {
-	color: #EE6655;
+	color: var(--red);
 	text-decoration: none;
 	display: inline;
 	background: none;
@@ -488,7 +463,7 @@ textarea {
 }
 
 .you {
-	color: #55EE66;
+	color: var(--green);
 }
 
 .controls {
@@ -499,7 +474,7 @@ textarea {
 }
 
 .op {
-	color: #EEDD33;
+	color: var(--yellow);
 }
 
 .error {
@@ -508,7 +483,7 @@ textarea {
 }
 
 .quote {
-	color: #55EE66;
+	color: var(--green);
 }
 
 .quote:before {
@@ -516,17 +491,16 @@ textarea {
 }
 
 .spoiler {
-	background: #000;
-	color: #000;
+	color: var(--text);
+	background: var(--text);
 }
 
 .spoiler:hover {
 	background: var(--text);
-	color: var(--background-body);
+	color: var(--background);
 }
 
 header img {
 	padding: 4px;
 	width: auto;
-	background: white;
 }

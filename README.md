@@ -6,7 +6,7 @@
 - [ ] Admin cookie
   - [ ] Delete as admin
   - [ ] Ban user
-- [ ] Revisit light theme
+- [x] Revisit light theme
 - [ ] Rate limiting
 - [ ] JavaScript
   - [ ] Highlight replies

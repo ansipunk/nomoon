@@ -5,12 +5,12 @@ local templates = {
 		'<th>Effect</th><th>Example</th><th>Result</th></tr></thead><tbody><tr>' ..
 		'<td>Bold</td><td>**text**</td><td><strong>text</strong></td></tr><tr><' ..
 		'td>Italic</td><td>__text__</td><td><em>text</em></td></tr><tr><td>Mono' ..
-		'spaced</td><td>`text`</td><td><code>text</code></td></tr><tr><td>Strik' ..
-		'ethrough</td><td>~~text~~</td><td><s>text</s></td></tr><tr><td>Spoiler' ..
-		'</td><td>%%text%%</td><td><span class="spoiler">text</span></td></tr><' ..
-		'tr><td>Quote</td><td>&gt;text</td><td><span class="quote">text</span><' ..
-		'/td></tr></tbody></table><h4>Why no code blocks?</h4><p>Use pastebin.<' ..
-		'/p><h4>Why make this?</h4><p>To learn Lua.</p>',
+		'spaced</td><td>``text``</td><td><code>text</code></td></tr><tr><td>Str' ..
+		'ikethrough</td><td>~~text~~</td><td><s>text</s></td></tr><tr><td>Spoil' ..
+		'er</td><td>%%text%%</td><td><span class="spoiler">text</span></td></tr' ..
+		'><tr><td>Quote</td><td>&gt;text</td><td><span class="quote">text</span' ..
+		'></td></tr></tbody></table><h4>Why no code blocks?</h4><p>Use pastebin' ..
+		'.</p><h4>Why make this?</h4><p>To learn Lua.</p>',
 	headerEnd = '</title><meta charset="utf-8" /><meta name="viewport" content=' ..
 		'"width=device-width, initial-scale=1" /><link rel="stylesheet" href="/' ..
 		'styles.css" /><link rel="icon" type="image/x-icon" href="/favicon.ico"' ..
