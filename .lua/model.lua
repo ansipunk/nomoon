@@ -69,11 +69,18 @@ local function createPost(db, threadId, content, token, op)
 		VALUES (?, ?, ?, ?) RETURNING *;
 	]], threadId, content, token, isOp), "failed to create post")
 
-	db:execute([[
-		UPDATE threads
-		SET bumped_at = CURRENT_TIMESTAMP
-		WHERE id = ?;
-	]], threadId)
+	local count = assert(db:fetchOne([[
+		SELECT count(1) AS count
+		FROM posts WHERE thread_id = ?;
+	]], threadId))
+
+	if count.count < 100 then
+		db:execute([[
+			UPDATE threads
+			SET bumped_at = CURRENT_TIMESTAMP
+			WHERE id = ?;
+		]], threadId)
+	end
 
 	return post
 end

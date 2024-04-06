@@ -11,7 +11,7 @@
 - [ ] JavaScript
   - [ ] Highlight replies
   - [ ] Ability to hide threads and posts
-- [ ] Bump limits
+- [x] Bump limits
 
 ### In the distant future
 
