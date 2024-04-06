@@ -1,6 +1,7 @@
 -- [[ nomoon ]]
 
 local template = require("template")
+local password = require("password")
 local markup = require("markup")
 local router = require("router")
 local sqlite = require("sqlite")
@@ -15,6 +16,11 @@ local function getToken()
 		SetCookie("token", token, {Path="/", HttpOnly=true, SameSite="Strict"})
 	end
 	return token
+end
+
+local function isAdmin()
+	local token = GetCookie("admin")
+	return token ~= nil and password.verify(arg[2], token)
 end
 
 local function getFormContent()
@@ -51,6 +57,7 @@ local function serveRequest()
 	local route = router(GetPath())
 	local token = getToken()
 	local method = GetMethod()
+	local admin = isAdmin()
 
 	if route ~= nil then
 		if method == "GET" then
@@ -61,11 +68,11 @@ local function serveRequest()
 
 			if route.entity == "root" then
 				local threads = model.getThreads(db, token, route.page)
-				return serveHtml(template.renderHomePage(threads))
+				return serveHtml(template.renderHomePage(threads, admin))
 			elseif route.entity == "thread" and route.threadId ~= 0 then
 				local thread = model.getThread(db, route.threadId, token)
 				if thread == nil then return serveError(404, "No such thing") end
-				return serveHtml(template.renderThreadPage(thread))
+				return serveHtml(template.renderThreadPage(thread, admin))
 			end
 		elseif method == "POST" then
 			if route.entity == "thread" then
@@ -75,7 +82,11 @@ local function serveRequest()
 					local thread = model.createThread(db, content, token)
 					return serveRedirect("/t/" .. tostring(thread.id))
 				elseif GetParam("action") == "delete" then
-					model.deleteThread(db, route.threadId, token)
+					if admin then
+						model.deleteThreadAdmin(db, route.threadId)
+					else
+						model.deleteThread(db, route.threadId, token)
+					end
 					return serveRedirect("/")
 				end
 			elseif route.entity == "post" and route.threadId ~= 0 then
@@ -86,7 +97,11 @@ local function serveRequest()
 					model.createPost(db, route.threadId, content, token, op)
 					return serveRedirect("/t/" .. tostring(route.threadId))
 				elseif GetParam("action") == "delete" then
-					model.deletePost(db, route.postId, token)
+					if admin then
+						model.deletePostAdmin(db, route.postId)
+					else
+						model.deletePost(db, route.postId, token)
+					end
 					return serveRedirect("/t/" .. tostring(route.threadId))
 				end
 			end

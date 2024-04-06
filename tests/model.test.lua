@@ -188,6 +188,13 @@ t:run("delete thread with wrong token", function(ctx)
 	t:assertNotNil(fetched, "thread %s was not deleted" % {thread.id})
 end)
 
+t:run("delete thread admin", function(ctx)
+	local thread = ctx.items.threads[1]
+	model.deleteThreadAdmin(ctx.db, thread.id)
+	local fetched = model.getThread(ctx.db, thread.id, thread.token)
+	t:assertNil(fetched, "thread %s was not deleted" % {thread.id})
+end)
+
 t:run("create post", function(ctx)
 	local threadId = 1
 	local content = "content"
@@ -225,6 +232,13 @@ t:run("delete post with wrong token", function(ctx)
 	model.deletePost(ctx.db, thread.posts[1].id, "token")
 	local fetched = assert(model.getThread(ctx.db, thread.id, "token"))
 	t:assertEqual(fetched.post_count, #thread.posts)
+end)
+
+t:run("delete post admin", function(ctx)
+	local thread = ctx.items.threads[1]
+	model.deletePostAdmin(ctx.db, thread.posts[1].id)
+	local fetched = assert(model.getThread(ctx.db, thread.id, "token"))
+	t:assertEqual(fetched.post_count, #thread.posts - 1)
 end)
 
 t:stats()

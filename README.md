@@ -4,7 +4,7 @@
 
 - [x] Serve 500 automatically
 - [ ] Admin cookie
-  - [ ] Delete as admin
+  - [x] Delete as admin
   - [ ] Ban user
 - [x] Revisit light theme
 - [ ] Rate limiting

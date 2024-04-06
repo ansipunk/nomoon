@@ -61,26 +61,26 @@ local function renderPage(title, content)
 	return templates.headerStart .. title .. templates.headerEnd .. content .. templates.footer
 end
 
-local function renderItem(item)
+local function renderItem(item, isAdmin)
 	local rendered = templates.metaStart .. item.created_at .. templates.metaMid .. templates.itemId .. tostring(item.id)
 	if item.post_count ~= nil then rendered = rendered .. templates.metaMid .. tostring(item.post_count) .. templates.replies end
 	if item.you == 1 then rendered = rendered .. templates.metaMid .. templates.you end
 	if item.op == 1 then rendered = rendered .. templates.metaMid .. templates.op end
 	if item.posts ~= nil then rendered = rendered .. templates.metaMid .. templates.replyStart .. tostring(item.id) .. templates.replyEnd end
 	rendered = rendered .. templates.metaEnd
-	if item.you == 1 then rendered = rendered .. templates.deleteStart .. item.delete_link .. templates.deleteEnd end
+	if item.you == 1 or isAdmin then rendered = rendered .. templates.deleteStart .. item.delete_link .. templates.deleteEnd end
 	return rendered .. templates.divEnd .. templates.contentStart .. item.content .. templates.divEnd
 end
 
-local function renderThread(thread)
-	local rendered = templates.threadStart .. renderItem(thread)
+local function renderThread(thread, isAdmin)
+	local rendered = templates.threadStart .. renderItem(thread, isAdmin)
 	for _, post in ipairs(thread.posts) do rendered = rendered .. templates.postStart .. renderItem(post) .. templates.divEnd end
 	return rendered .. templates.divEnd .. templates.hr
 end
 
-local function renderHomePage(threads)
+local function renderHomePage(threads, isAdmin)
 	local content = templates.createThread
-	for _, thread in ipairs(threads.threads) do content = content .. renderThread(thread) end
+	for _, thread in ipairs(threads.threads) do content = content .. renderThread(thread, isAdmin) end
 	content = content .. templates.paginatorStart
 	if threads.next > 0 then content = content .. templates.pageStart .. tostring(threads.next) .. templates.pageMid .. templates.pageOld end
 	if threads.prev >= 0 then content = content .. templates.pageStart .. tostring(threads.prev) .. templates.pageMid .. templates.pageNew end
@@ -88,9 +88,9 @@ local function renderHomePage(threads)
 	return renderPage(templates.homeTitle, content)
 end
 
-local function renderThreadPage(thread)
+local function renderThreadPage(thread, isAdmin)
 	local title = templates.itemId .. tostring(thread.id)
-	local content = renderThread(thread) .. templates.createPostStart .. tostring(thread.id) .. templates.createPostEnd
+	local content = renderThread(thread, isAdmin) .. templates.createPostStart .. tostring(thread.id) .. templates.createPostEnd
 	return renderPage(title, content)
 end
 

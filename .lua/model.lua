@@ -50,6 +50,12 @@ local function deleteThread(db, threadId, token)
 	]], threadId, token)
 end
 
+local function deleteThreadAdmin(db, threadId)
+	db:execute([[
+		DELETE FROM threads WHERE id = ?;
+	]], threadId)
+end
+
 local function createPost(db, threadId, content, token, op)
 	local isOp = 0
 
@@ -90,6 +96,12 @@ local function deletePost(db, postId, token)
 		DELETE FROM posts
 		WHERE id = ? AND token = ?;
 	]], postId, token)
+end
+
+local function deletePostAdmin(db, postId)
+	db:execute([[
+		DELETE FROM posts WHERE id = ?;
+	]], postId)
 end
 
 local function getThread(db, threadId, token)
@@ -198,10 +210,12 @@ end
 
 return {
 	migrate = migrate,
-	createThread = createThread,
 	getThread = getThread,
 	getThreads = getThreads,
+	createThread = createThread,
 	deleteThread = deleteThread,
+	deleteThreadAdmin = deleteThreadAdmin,
 	createPost = createPost,
 	deletePost = deletePost,
+	deletePostAdmin = deletePostAdmin,
 }

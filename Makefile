@@ -20,7 +20,7 @@ build: redbean
 	chmod a+x nomoon.com
 
 dev: build
-	./nomoon.com /tmp/nomoon.test.db
+	./nomoon.com /tmp/nomoon.test.db '$$argon2i$$v=19$$m=65536,t=2,p=4$$FG+1x2pTq/aVYc1TNavXVACxqd2Oj2NlUr0IRalqs2hFOv6XPctXQMG9GsWyeqDr772kPy1qujiaN2tAd0T2NQ$$+qbyzPNbMdw5ISgk27bLyQrTHJXUdLVH'
 
 test: build
 	$(foreach test,$(shell ls tests),./nomoon.com -i tests/$(test);)

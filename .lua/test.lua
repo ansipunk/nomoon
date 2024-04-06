@@ -17,6 +17,10 @@ function TestRunner:assert(got, name)
 	if got ~= true then error("-- expected --\n" .. name .. "\n-- to be true --") end
 end
 
+function TestRunner:assertNot(got, name)
+	if got ~= false then error("-- expected --\n" .. name .. "\n-- to be false --") end
+end
+
 function TestRunner:assertEqual(got, want)
 	if got ~= want then error("-- expected --\n" .. got .. "\n-- to be equal to --\n" .. want) end
 end
